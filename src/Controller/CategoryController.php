@@ -13,10 +13,10 @@ class CategoryController extends AbstractController
     #[Route('/api/categories', methods: ['GET'])]
     public function list(Request $request, Connection $conn): JsonResponse
     {
-        // 1. Sprache aus Request holen (default = de-DE)
+        // Sprache aus Request holen (default = de-DE)
         $locale = $request->query->get('lang', 'de-DE');
 
-        // 2. language_id zur Sprache finden
+        // language_id zur Sprache finden
         $languageId = $conn->fetchOne("
             SELECT LOWER(HEX(language.id))
             FROM language
@@ -28,7 +28,7 @@ class CategoryController extends AbstractController
             return $this->json(['error' => 'Language not found'], 400);
         }
 
-        // 3. Kategorien mit Übersetzung für diese Sprache holen
+        // Kategorien mit Übersetzung für diese Sprache holen
         $rows = $conn->fetchAllAssociative("
             SELECT 
                 LOWER(HEX(c.id)) AS id,
@@ -41,5 +41,19 @@ class CategoryController extends AbstractController
         ", ['languageId' => $languageId]);
 
         return $this->json($rows);
+    }
+
+    //GET CATEGORIES
+    #[Route('/api/categories', name: 'api_categories', methods: ['GET'])]
+    public function getCategories(CategoryRepository $repo): JsonResponse
+    {
+        $categories = $repo->findAll();
+
+        $data = array_map(fn($cat) => [
+            'id' => $cat->getId(),
+            'name' => $cat->getName(),
+        ], $categories);
+
+        return $this->json($data);
     }
 }
