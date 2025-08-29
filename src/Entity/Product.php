@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ProductRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
@@ -23,6 +24,9 @@ class Product
     #[ORM\Column(type: UuidType::NAME)]
     private ?Uuid $versionId;
 
+    #[ORM\OneToMany(targetEntity: ProductTranslation::class, mappedBy: 'product')]
+    private Collection $translations;
+
     #[ORM\Column]
     private ?int $autoIncrement = null;
 
@@ -36,31 +40,31 @@ class Product
     private ?Uuid $parentId;
 
     #[ORM\Column(type: UuidType::NAME, nullable: true)]
-    private $parentVersionId;
+    private ?Uuid $parentVersionId;
 
     #[ORM\Column(type: UuidType::NAME, nullable: true)]
-    private $taxId;
+    private ?Uuid $taxId;
 
     #[ORM\Column(type: UuidType::NAME, nullable: true)]
-    private $productManufacturerId;
+    private ?Uuid $productManufacturerId;
 
     #[ORM\Column(type: UuidType::NAME, nullable: true)]
-    private $productManufacturerVersionId;
+    private ?Uuid $productManufacturerVersionId;
 
     #[ORM\Column(type: UuidType::NAME, nullable: true)]
-    private $deliveryTimeId;
+    private ?Uuid $deliveryTimeId;
 
 //    #[ORM\Column(type: UuidType::NAME, nullable: true)] // field in db NOT underscored. TODO: fix this
 //    private $deliveryTime;
 
     #[ORM\Column(type: UuidType::NAME, nullable: true)]
-    private $productMediaId;
+    private ?Uuid $productMediaId;
 
     #[ORM\Column(type: UuidType::NAME, nullable: true)]
-    private $productMediaVersionId;
+    private ?Uuid $productMediaVersionId;
 
     #[ORM\Column(type: UuidType::NAME, nullable: true)]
-    private $unitId;
+    private ?Uuid $unitId;
 
     #[ORM\Column(nullable: true)]
     private ?array $categoryTree = null;
@@ -75,37 +79,37 @@ class Product
     private ?array $propertyIds = null;
 
     #[ORM\Column(type: UuidType::NAME, nullable: true)]
-    private $tax;
+    private ?Uuid $tax;
 
     #[ORM\Column(type: UuidType::NAME, nullable: true)]
-    private $manufacturer;
+    private ?Uuid $manufacturer;
 
     #[ORM\Column(type: UuidType::NAME, nullable: true)]
-    private $cover;
+    private ?Uuid $cover;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: UuidType::NAME, nullable: true)]
-    private $unit;
+    private ?Uuid $unit;
 
     #[ORM\Column(type: UuidType::NAME, nullable: true)]
-    private $media;
+    private ?Uuid $media;
 
     #[ORM\Column(type: UuidType::NAME, nullable: true)]
-    private $prices;
+    private ?Uuid $prices;
 
     #[ORM\Column(type: UuidType::NAME, nullable: true)]
-    private $visibilities;
+    private ?Uuid $visibilities;
 
     #[ORM\Column(type: UuidType::NAME, nullable: true)]
-    private $properties;
+    private ?Uuid $properties;
 
     #[ORM\Column(type: UuidType::NAME, nullable: true)]
-    private $categories;
+    private ?Uuid $categories;
 
-    #[ORM\Column(type: UuidType::NAME, nullable: true)]
-    private $translations;
+//    #[ORM\Column(type: UuidType::NAME, nullable: true)]
+//    private ?Uuid $translations;
 
     #[ORM\Column(nullable: true)]
     private ?array $price = null;
@@ -220,6 +224,16 @@ class Product
         $this->versionId = $versionId;
 
         return $this;
+    }
+
+    public function getTranslations(): Collection
+    {
+        return $this->translations;
+    }
+
+    public function setTranslations(Collection $translations): void
+    {
+        $this->translations = $translations;
     }
 
     public function getAutoIncrement(): ?int
@@ -546,17 +560,17 @@ class Product
         return $this;
     }
 
-    public function getTranslations()
-    {
-        return $this->translations;
-    }
+//    public function getTranslations()
+//    {
+//        return $this->translations;
+//    }
 
-    public function setTranslations($translations): static
-    {
-        $this->translations = $translations;
-
-        return $this;
-    }
+//    public function setTranslations($translations): static
+//    {
+//        $this->translations = $translations;
+//
+//        return $this;
+//    }
 
     public function getPrice(): ?array
     {
