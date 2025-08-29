@@ -23,35 +23,11 @@ class ProductRepository extends ServiceEntityRepository
     public function searchBySearchTerm($searchTerm): array
     {
         return $this->createQueryBuilder('p')
+            ->leftJoin('p.translations', 't')
             ->andWhere('p.productNumber LIKE :search')
+            ->orWhere('t.name LIKE :search')
             ->setParameter('search', '%' . $searchTerm . '%')
             ->getQuery()
-            ->getResult()
-        ;
-//        $query = $this->getEntityManager()->createQuery(
-//            'SELECT p
-//            FROM App\Entity\Product p
-//            WHERE p.productNumber LIKE :search'
-//        )
-//            ->setParameter('search', '%' . $searchTerm . '%')
-//        ;
-//        $results = $query->getResult();
-//
-//        return $results;
+            ->getResult();
     }
-
-    //    /**
-    //     * @return Product[] Returns an array of Product objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
 }

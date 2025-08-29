@@ -6,6 +6,7 @@ use App\Repository\ProductTranslationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
+use Symfony\Component\Serializer\Attribute\Ignore;
 use Symfony\Component\Uid\Uuid;
 
 
@@ -15,6 +16,7 @@ use Symfony\Component\Uid\Uuid;
 class ProductTranslation
 {
     #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'translations')]
+    #[Ignore]
     private Product $product;
 
     #[ORM\Column(name: "product_version_id", type: UuidType::NAME, length: 16)]

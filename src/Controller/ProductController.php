@@ -14,7 +14,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class ProductController extends AbstractController
 {
-    #[Route('/api/product/search', name: 'product_search', methods: ['POST'])]
+    #[Route('/api/products/search', name: 'product_search', methods: ['POST'])]
     public function productSearch(Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer): Response
     {
         $searchTerm = $request->getPayload()->get('searchTerm');
@@ -24,6 +24,16 @@ class ProductController extends AbstractController
         }
 
         $jsonContent = $serializer->serialize($foundProducts, 'json');
+
+        return JsonResponse::fromJsonString($jsonContent);
+    }
+
+    #[Route('/api/products/{productId}', name: 'get_product', methods: ['GET'])]
+    public function getProduct(string $productId, Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer): Response
+    {
+        $product = $entityManager->getRepository(Product::class)->find($productId);
+
+        $jsonContent = $serializer->serialize($product, 'json');
 
         return JsonResponse::fromJsonString($jsonContent);
     }
