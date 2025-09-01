@@ -1,9 +1,11 @@
 <?php
+// src/Repository/CategoryRepository.php
 namespace App\Repository;
 
 use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\DBAL\Connection;
 
 class CategoryRepository extends ServiceEntityRepository
 {
@@ -15,15 +17,8 @@ class CategoryRepository extends ServiceEntityRepository
         $this->conn = $conn;
     }
 
-    /**
-     * kategorien mit Übersetzung in bestimmter Sprache
-     *
-     * @param string $locale z. B. "de-DE" oder "en-GB"
-     * @return array
-     */
     public function findByLocale(string $locale = 'de-DE'): array
     {
-        // language_id zur Sprache finden
         $languageId = $this->conn->fetchOne("
             SELECT LOWER(HEX(language.id))
             FROM language
@@ -35,7 +30,6 @@ class CategoryRepository extends ServiceEntityRepository
             return [];
         }
 
-        // Kategorien + Übersetzungen für Sprache holen
         return $this->conn->fetchAllAssociative("
             SELECT 
                 LOWER(HEX(c.id)) AS id,
@@ -46,5 +40,16 @@ class CategoryRepository extends ServiceEntityRepository
             WHERE ct.language_id = UNHEX(:languageId)
             ORDER BY ct.name
         ", ['languageId' => $languageId]);
+    }
+
+    /**
+     * Fallback: alle Kategorien ohne Übersetzung
+     */
+    public function findAllAsArray(): array
+    {
+        return array_map(fn($cat) => [
+            'id' => $cat->getId(),
+            'name' => $cat->getName(),
+        ], $this->findAll());
     }
 }
