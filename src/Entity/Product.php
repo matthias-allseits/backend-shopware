@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ProductRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\IdGenerator\UuidGenerator;
 use Symfony\Bridge\Doctrine\Types\UuidType;
@@ -20,6 +22,9 @@ class Product
 
     #[ORM\Column(type: UuidType::NAME)]
     private ?Uuid $versionId;
+
+    #[ORM\OneToMany(targetEntity: ProductTranslation::class, mappedBy: 'product')]
+    private Collection $translations;
 
     #[ORM\Column]
     private ?int $autoIncrement = null;
@@ -102,8 +107,8 @@ class Product
     #[ORM\Column(type: UuidType::NAME, nullable: true)]
     private ?Uuid $categories;
 
-    #[ORM\Column(type: UuidType::NAME, nullable: true)]
-    private ?Uuid $translations;
+//    #[ORM\Column(type: UuidType::NAME, nullable: true)]
+//    private ?Uuid $translations;
 
     #[ORM\Column(nullable: true)]
     private ?array $price = null;
@@ -218,6 +223,16 @@ class Product
         $this->versionId = $versionId;
 
         return $this;
+    }
+
+    public function getTranslations(): Collection
+    {
+        return $this->translations;
+    }
+
+    public function setTranslations(Collection $translations): void
+    {
+        $this->translations = $translations;
     }
 
     public function getAutoIncrement(): ?int
@@ -544,17 +559,17 @@ class Product
         return $this;
     }
 
-    public function getTranslations()
-    {
-        return $this->translations;
-    }
+//    public function getTranslations()
+//    {
+//        return $this->translations;
+//    }
 
-    public function setTranslations($translations): static
-    {
-        $this->translations = $translations;
-
-        return $this;
-    }
+//    public function setTranslations($translations): static
+//    {
+//        $this->translations = $translations;
+//
+//        return $this;
+//    }
 
     public function getPrice(): ?array
     {
