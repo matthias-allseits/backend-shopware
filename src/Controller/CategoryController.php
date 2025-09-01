@@ -1,4 +1,4 @@
-<?php 
+<?php
 // src/Controller/CategoryController.php
 namespace App\Controller;
 
@@ -16,8 +16,9 @@ class CategoryController extends AbstractController
         $locale = $request->query->get('lang', 'de-DE');
         $rows = $repo->findByLocale($locale);
 
-        if (!$rows) {
-            return $this->json(['error' => 'Language not found or no categories'], 400);
+        if (empty($rows)) {
+            // Fallback: zeige alle Kategorien
+            $rows = $repo->findAllAsArray();
         }
 
         return $this->json($rows);
