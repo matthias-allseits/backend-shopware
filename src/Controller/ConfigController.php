@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use App\Repository\SystemConfigRepository;
 
 
 class ConfigController extends AbstractController
@@ -43,4 +45,23 @@ class ConfigController extends AbstractController
 
         return JsonResponse::fromJsonString($jsonContent);
     }
+
+
+    #[Route('/api/config', name: 'config_save', methods: ['POST'])]
+    public function save(Request $request, SystemConfigRepository $repo): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        if (!is_array($data)) {
+            return $this->json(['error' => 'Invalid data'], 400);
+        }
+
+        foreach ($data as $key => $value) {
+            $repo->saveValue('SymbioConnector.config.' . $key, $value);
+        }
+
+        return $this->json(['status' => 'ok']);
+    }
+
+
 }

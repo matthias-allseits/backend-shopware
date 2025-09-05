@@ -40,4 +40,43 @@ class SystemConfigRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    /**
+     * Alle Config-Werte als Array zurückgeben
+     */
+    public function findAllAsKeyValue(): array
+    {
+        $configs = $this->findAll();
+        $result = [];
+
+        foreach ($configs as $config) {
+            $result[] = [
+                'key' => $config->getConfigurationKey(),
+                'value' => $config->getConfigurationValue(),
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Einen Wert speichern oder aktualisieren
+     */
+    public function saveValue(string $key, $value): void
+{
+    $em = $this->getEntityManager();
+    $config = $this->findOneBy(['configurationKey' => $key]);
+
+    if (!$config) {
+        $config = new SystemConfig();
+        $config->setConfigurationKey($key);
+    }
+
+    // Konsistent als JSON {"_value": ...}
+    $config->setConfigurationValue(['_value' => $value]);
+
+    $em->persist($config);
+    $em->flush();
+}
+
 }
