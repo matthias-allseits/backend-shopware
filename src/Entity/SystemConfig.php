@@ -11,6 +11,7 @@ use Symfony\Component\Uid\Uuid;
 
 
 #[ORM\Entity(repositoryClass: SystemConfigRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class SystemConfig
 {
     #[ORM\Id]
@@ -40,6 +41,14 @@ class SystemConfig
     private string $key;
 
     private mixed $value;
+
+    #[ORM\PrePersist]
+    public function setCreatedAtValue(): void
+    {
+        if ($this->createdAt === null) {
+            $this->createdAt = new \DateTimeImmutable();
+        }
+    }
 
     public function getId(): ?Uuid
     {
