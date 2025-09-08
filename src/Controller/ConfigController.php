@@ -15,21 +15,8 @@ use App\Repository\SystemConfigRepository;
 
 class ConfigController extends AbstractController
 {
-    #[Route('/config', name: 'config_list')]
-    public function list(EntityManagerInterface $entityManager): Response
-    {
-        $configValues = $entityManager->getRepository(SystemConfig::class)->findAll();
-        foreach ($configValues as $configValue) {
-            echo $configValue->getId() . "\n<br>";
-            echo $configValue->getSalesChannelId() . "\n<br>";
-            echo "-----------------------------\n<br>";
-        }
 
-        return new Response('abc');
-    }
-
-
-    #[Route('/api/config', name: 'config_list')]
+    #[Route('/api/config', name: 'config_list', methods: ["GET"])]
     public function apiList(EntityManagerInterface $entityManager, SerializerInterface $serializer): Response
     {
         $configValues = $entityManager->getRepository(SystemConfig::class)->findAll();
